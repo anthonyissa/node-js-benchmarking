@@ -9,7 +9,8 @@ v19.8.1
 
 v20.0.0
 12ms
-Threads -> 80ms
+8 Threads -> 80ms
+2 Threads -> 64ms
 
 v20.9.0
 12ms
