@@ -9,7 +9,7 @@ const reserves = {
 
 const amountInOut = BigInt("1122340000000000000");
 const numThreads = 2; // Adjust based on your CPU
-const opsPerThread = 1000000 / numThreads;
+const opsPerThread = 10000000000000 / numThreads;
 
 interface WorkerWithIsDone extends Worker {
   isDone?: boolean;
