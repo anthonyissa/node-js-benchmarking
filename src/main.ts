@@ -1,18 +1,5 @@
+import { Worker } from "worker_threads";
 const start = performance.now();
-
-function getAmountOut(amountIn: bigint, reserve0: bigint, reserve1: bigint) {
-  const amountInWithfees = amountIn * BigInt(997);
-  return (
-    (reserve1 * amountInWithfees) / (reserve0 * BigInt(1000) + amountInWithfees)
-  );
-}
-function getAmountIn(amountOut: bigint, reserve0: bigint, reserve1: bigint) {
-  return (
-    (reserve0 * amountOut * BigInt(1000)) /
-      ((reserve1 - amountOut) * BigInt(997)) +
-    BigInt(1)
-  );
-}
 
 const reserves = {
   reserve0: BigInt("1617318106716892672"),
@@ -20,20 +7,51 @@ const reserves = {
   blockNumber: 18561987,
 };
 
-// 1,12234n*10n**18n
 const amountInOut = BigInt("1122340000000000000");
-let amount = 1;
-for (let i = 0; i < 1000000; i++) {
-  amount = amount + 1;
+const numThreads = 2; // Adjust based on your CPU
+const opsPerThread = 1000000 / numThreads;
 
-  const reservesCopy = {
-    reserve0: reserves.reserve0,
-    reserve1: reserves.reserve1,
-  };
-
-  getAmountOut(amountInOut, reservesCopy.reserve0, reservesCopy.reserve1);
-  getAmountIn(amountInOut, reservesCopy.reserve0, reservesCopy.reserve1);
+interface WorkerWithIsDone extends Worker {
+  isDone?: boolean;
 }
+const workers: WorkerWithIsDone[] = [];
 
-const end = performance.now();
-console.log(end - start + "ms");
+for (let i = 0; i < numThreads; i++) {
+  const worker: WorkerWithIsDone = new Worker("./dist/worker.js", {
+    workerData: {
+      start: i * opsPerThread,
+      end: (i + 1) * opsPerThread,
+      amountInOut,
+      reserves,
+    },
+  });
+
+  console.log(`Worker ${i} started`);
+
+  worker.on("message", (msg) => {
+    console.log(`Worker ${i} finished: ${msg}`);
+    (worker as WorkerWithIsDone).isDone = true;
+    if (workers.every((w: WorkerWithIsDone) => w.isDone)) {
+      const end = performance.now();
+      console.log(end - start + "ms");
+    }
+  });
+
+  worker.on("error", (err) => {
+    console.error(err);
+  });
+
+  worker.on("exit", (code) => {
+    if (code !== 0)
+      console.error(new Error(`Worker stopped with exit code ${code}`));
+  });
+
+  worker.isDone = false;
+  worker.on("message", (msg) => {
+    if (msg === "done") {
+      worker.isDone = true;
+    }
+  });
+  worker.postMessage("start");
+  workers.push(worker);
+}

@@ -5,7 +5,9 @@
   "main": "main.js",
   "scripts": {
     "build": "tsc",
-    "start": "tsc && node ./dist/index.js",
+    "start-base": "tsc && node ./dist/index.js",
+    "start-worker": "tsc && node ./dist/main.js",
+    "start-gpu": "tsc && node ./dist/gpu.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,5 +15,8 @@
   "license": "ISC",
   "devDependencies": {
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "gpu.js": "^2.16.0"
   }
 }
