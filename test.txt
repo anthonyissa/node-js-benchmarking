@@ -1,0 +1,20 @@
+v16.17.0
+1800ms
+
+v18.9.0
+1500ms
+
+v19.8.1
+900ms
+
+v20.0.0
+12ms
+Threads -> 80ms
+
+v20.9.0
+12ms
+Thread -> 73ms
+
+v21.0.0
+18ms
+Threads -> 70ms
