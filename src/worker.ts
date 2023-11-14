@@ -1,4 +1,4 @@
-import { parentPort } from "worker_threads";
+import { parentPort, workerData } from "worker_threads";
 
 function getAmountOut(amountIn: bigint, reserve0: bigint, reserve1: bigint) {
   const amountInWithfees = amountIn * BigInt(997);
@@ -15,26 +15,26 @@ function getAmountIn(amountOut: bigint, reserve0: bigint, reserve1: bigint) {
   );
 }
 
-parentPort?.postMessage("done");
+const { start, end, amountInOut, reserves } = workerData;
+const totalOut: Map<number, bigint> = new Map();
+const totalIn: Map<number, bigint> = new Map();
+for (let i = start; i < end; i++) {
+  const reservesCopy = {
+    reserve0: reserves.reserve0,
+    reserve1: reserves.reserve1,
+  };
 
-parentPort?.on("message", (data) => {
-  const { start, end, amountInOut, reserves } = data;
-  for (let i = start; i < end; i++) {
-    const reservesCopy = {
-      reserve0: reserves.reserve0,
-      reserve1: reserves.reserve1,
-    };
-
-    getAmountOut(amountInOut, reservesCopy.reserve0, reservesCopy.reserve1);
-    getAmountIn(amountInOut, reservesCopy.reserve0, reservesCopy.reserve1);
-  }
-  parentPort?.postMessage("done");
-});
-
-parentPort?.on("error", (err) => {
-  console.error(err);
-});
-
-parentPort?.on("close", () => {
-  console.log("Worker closed");
+  totalOut.set(
+    i,
+    getAmountOut(amountInOut, reservesCopy.reserve0, reservesCopy.reserve1)
+  );
+  totalIn.set(
+    i,
+    getAmountIn(amountInOut, reservesCopy.reserve0, reservesCopy.reserve1)
+  );
+}
+console.log("done");
+parentPort?.postMessage({
+  totalOut,
+  totalIn,
 });

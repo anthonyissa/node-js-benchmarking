@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start-base": "tsc && node ./dist/index.js",
-    "start-worker": "tsc && node ./dist/main.js",
+    "start-worker": "tsc && node ./dist/thread.js",
     "start-gpu": "tsc && node ./dist/gpu.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

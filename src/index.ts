@@ -23,7 +23,7 @@ const reserves = {
 // 1,12234n*10n**18n
 const amountInOut = BigInt("1122340000000000000");
 let amount = 1;
-for (let i = 0; i < 1000000; i++) {
+for (let i = 0; i < 1000000000; i++) {
   amount = amount + 1;
 
   const reservesCopy = {
