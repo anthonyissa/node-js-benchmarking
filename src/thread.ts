@@ -17,6 +17,7 @@ const workers: WorkerWithIsDone[] = [];
 
 const start = performance.now();
 let cpt = 0;
+
 for (let i = 0; i < numThreads; i++) {
   const workerData = {
     start: i * opsPerThread,
@@ -40,7 +41,6 @@ for (let i = 0; i < numThreads; i++) {
 
   worker.isDone = false;
   worker.on("message", (result) => {
-    console.log({ result });
     worker.isDone = true;
     cpt++;
     if (cpt === numThreads) {

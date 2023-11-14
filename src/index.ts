@@ -1,18 +1,6 @@
-const start = performance.now();
+import { getAmountIn, getAmountOut } from "./functions";
 
-function getAmountOut(amountIn: bigint, reserve0: bigint, reserve1: bigint) {
-  const amountInWithfees = amountIn * BigInt(997);
-  return (
-    (reserve1 * amountInWithfees) / (reserve0 * BigInt(1000) + amountInWithfees)
-  );
-}
-function getAmountIn(amountOut: bigint, reserve0: bigint, reserve1: bigint) {
-  return (
-    (reserve0 * amountOut * BigInt(1000)) /
-      ((reserve1 - amountOut) * BigInt(997)) +
-    BigInt(1)
-  );
-}
+const start = performance.now();
 
 const reserves = {
   reserve0: BigInt("1617318106716892672"),
@@ -23,7 +11,7 @@ const reserves = {
 // 1,12234n*10n**18n
 const amountInOut = BigInt("1122340000000000000");
 let amount = 1;
-for (let i = 0; i < 1000000000; i++) {
+for (let i = 0; i < 10000000; i++) {
   amount = amount + 1;
 
   const reservesCopy = {

@@ -19,3 +19,27 @@ Thread -> 73ms
 v21.0.0
 18ms
 Threads -> 70ms
+
+-----------------------
+
+THREADS UPDATE:
+On retourne les valeurs calculées
+
+v20.0.0
+- 1 000 000 000
+no thread: 900ms 
+2 / 8 threads: CRASH / TOO LONG
+SANS RETOUR + SANS MAP + thread: 250ms
+
+
+- 10 000 000
+no thread: 20ms
+8 threads: 16000ms
+2 threads: 24000ms
+
+- 1 000 000
+no thread: 10ms
+8 threads: 950ms
+
+v21.0.0 pas assez de différence niveau thread
+v19.8.1, v18.9.0, v16.17.0 en gros < v20.0.0 on peut oublier
